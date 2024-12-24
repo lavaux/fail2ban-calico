@@ -134,15 +134,36 @@ metadata:
   name: fail2ban-jails
   namespace: fail2ban
 data:
-  gitea.local: |
-    [gitea]
+  #  gitea.local: |
+  #    [gitea]
+  #    enabled = true
+  #    filter = gitea
+  #    logpath = /var/log/pods/gitea*/gitea/*.log
+  #    action = calico-action
+  #    maxretry = 20
+  #    findtime = 3600
+  #    bantime = 900
+  forgejo.local: |
+    [forgejo]
     enabled = true
     filter = gitea
-    logpath = /var/log/pods/gitea*/gitea/*.log
+    logpath = /var/log/pods/forgejo*/forgejo/*.log
+              /tmp/empty-log.log
     action = calico-action
     maxretry = 20
     findtime = 3600
     bantime = 900
+    skip_if_nologs=true
+  nextcloud.local: |
+    [nextcloud]
+    enabled = true
+    filter = nextcloud
+    action = calico-action
+    maxretry = 3
+    bantime = 86400
+    findtime = 43200
+    logpath = /var/log/pods/nextcloud*/nextcloud/*.log
+    skip_if_nologs=true
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -152,6 +173,12 @@ metadata:
 data:
   gitea.local: |
     [Definition]
-    filter = gitea[journalflags=1,journalmatch='CONTAINER_TAG=gitea']
     failregex =  .*(Failed authentication attempt|invalid credentials|Attempted access of unknown user).* from <HOST>
     ignoreregex = .*ssh\.go.*Failed authentication attempt.*
+
+  nextcloud.local: |
+    [Definition]
+    _groupsre = (?:(?:,?\s*"\w+":(?:"[^"]+"|\w+))*)
+    failregex = ^\{%(_groupsre)s,?\s*"remoteAddr":"<HOST>"%(_groupsre)s,?\s*"message":"Login failed:
+                ^\{%(_groupsre)s,?\s*"remoteAddr":"<HOST>"%(_groupsre)s,?\s*"message":"Trusted domain error.
+    datepattern = ,?\s*"time"\s*:\s*"%%Y-%%m-%%d[T ]%%H:%%M:%%S(%%z)?"

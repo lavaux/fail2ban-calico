@@ -45,6 +45,10 @@ spec:
               mountPath: /etc/fail2ban/filter.d/gitea.local
               readOnly: true
               subPath: gitea.local
+            - name: filters
+              mountPath: /etc/fail2ban/filter.d/nextcloud.local
+              readOnly: true
+              subPath: gitea.local
             - name: logs
               mountPath: /var/log/pods/
               readOnly: true
