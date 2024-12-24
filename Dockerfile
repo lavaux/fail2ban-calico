@@ -52,4 +52,6 @@ RUN tar -xJf /tmp/s6overlay.tar.xz -C / \
 # Add rootfs and fail2ban-calico
 ADD rootfs /
 
+CMD ["sleep", "99d"]
+
 ENTRYPOINT [ "/init" ]
