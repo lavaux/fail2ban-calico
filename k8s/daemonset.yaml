@@ -17,7 +17,7 @@ spec:
       serviceAccountName: fail2ban
       containers:
         - name: fail2ban
-          image: stoub/fail2ban-calico:7ac3e126
+          image: glvx/fail2ban-calico:3
           args: ["fail2ban-server", "-f"]
           resources:
             limits:
@@ -42,13 +42,9 @@ spec:
               mountPath: /etc/fail2ban/jail.d
               readOnly: true
             - name: filters
-              mountPath: /etc/fail2ban/filter.d/custom-postfix-sasl.local
-              subPath: custom-postfix-sasl.local
+              mountPath: /etc/fail2ban/filter.d/gitea.local
               readOnly: true
-            - name: filters
-              mountPath: /etc/fail2ban/filter.d/custom-vaultwarden.local
-              subPath: custom-vaultwarden.local
-              readOnly: true
+              subPath: gitea.local
             - name: logs
               mountPath: /var/log/pods/
               readOnly: true

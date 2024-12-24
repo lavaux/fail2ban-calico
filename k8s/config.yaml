@@ -134,27 +134,15 @@ metadata:
   name: fail2ban-jails
   namespace: fail2ban
 data:
-  01_mail.local: |
-    [dovecot]
+  gitea.local: |
+    [gitea]
     enabled = true
-    logpath = /var/log/pods/home_mail-*/mail/*.log
-    action    = calico-action
-
-    [postfix]
-    enabled = true
-    logpath = /var/log/pods/home_mail-*/mail/*.log
-    action    = calico-action
-
-    [custom-postfix-sasl]
-    enabled = true
-    logpath = /var/log/pods/home_mail-*/mail/*.log
-    action    = calico-action
-
-    [custom-vaultwarden]
-    enabled = true
-    logpath = /var/log/pods/home_bitwarden-*/bitwarden/*.log
-    action    = calico-action
-
+    filter = gitea
+    logpath = /var/log/pods/gitea*/gitea/*.log
+    action = calico-action
+    maxretry = 20
+    findtime = 3600
+    bantime = 900
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -162,17 +150,8 @@ metadata:
   name: fail2ban-filters
   namespace: fail2ban
 data:
-  custom-postfix-sasl.local: |
-    # Fail2Ban filter for postfix authentication failures
-    [INCLUDES]
-    before = common.conf
+  gitea.local: |
     [Definition]
-    _daemon = postfix(-\w+)?/\w+(?:/smtp[ds])?
-    failregex = %(__prefix_line)swarning: [-._\w]+\[<HOST>\]: SASL (?:LOGIN|PLAIN|(?:CRAM|DIGEST)-MD5) authentication failed(: [ A-Za-z0-9+/]*={0,2})?\s*$
-  custom-vaultwarden.local: |
-    # Fail2Ban filter for postfix authentication failures
-    [INCLUDES]
-    before = common.conf
-    [Definition]
-    _daemon = postfix(-\w+)?/\w+(?:/smtp[ds])?
-    failregex = %(__prefix_line)sUsername or password is incorrect. Try again. IP: <HOST>\.
+    filter = gitea[journalflags=1,journalmatch='CONTAINER_TAG=gitea']
+    failregex =  .*(Failed authentication attempt|invalid credentials|Attempted access of unknown user).* from <HOST>
+    ignoreregex = .*ssh\.go.*Failed authentication attempt.*
