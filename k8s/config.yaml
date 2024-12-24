@@ -162,7 +162,7 @@ data:
     maxretry = 3
     bantime = 86400
     findtime = 43200
-    logpath = /var/log/pods/nextcloud*/nextcloud/*.log
+    logpath = /var/log/pods/nextcloud*/nextcloud-logger/*.log
     skip_if_nologs=true
 ---
 apiVersion: v1
