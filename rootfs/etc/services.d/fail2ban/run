@@ -1,6 +1,4 @@
 #!/usr/bin/execlineb -P
 #
 
-touch /tmp/empty-log.log
-
 fail2ban-server -f
