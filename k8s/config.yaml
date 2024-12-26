@@ -118,14 +118,14 @@ data:
     #
     # Destination email address used solely for the interpolations in
     # jail.{conf,local} configuration files.
-    destemail = root@localhost
+    destemail = webaquila@iap.fr
 
     #
     # Name of the sender for mta actions
     sendername = Fail2Ban
 
     # Email address of the sender
-    sender = fail2ban@localhost
+    sender = webaquila@iap.fr
 
 ---
 apiVersion: v1
@@ -177,10 +177,11 @@ data:
     [Definition]
     failregex =  .*(Failed authentication attempt|invalid credentials|Attempted access of unknown user).* from <HOST>
     ignoreregex = .*ssh\.go.*Failed authentication attempt.*
+    datepattern = ^%%Y-%%m-%%dT%%H:%%M:%%S\.\d+%%z\s
 
   nextcloud.local: |
     [Definition]
     _groupsre = (?:(?:,?\s*"\w+":(?:"[^"]+"|\w+))*)
-    failregex = ^\{%(_groupsre)s,?\s*"remoteAddr":"<HOST>"%(_groupsre)s,?\s*"message":"Login failed:
-                ^\{%(_groupsre)s,?\s*"remoteAddr":"<HOST>"%(_groupsre)s,?\s*"message":"Trusted domain error.
-    datepattern = ,?\s*"time"\s*:\s*"%%Y-%%m-%%d[T ]%%H:%%M:%%S(%%z)?"
+    datepattern = ^%%Y-%%m-%%dT%%H:%%M:%%S\.\d+%%z\s
+    failregex = ^.*\{%(_groupsre)s,?\s*"remoteAddr":"<HOST>"%(_groupsre)s,?\s*"message":"Login failed:.*$
+                ^.* F \{%(_groupsre)s,?\s*"remoteAddr":"<HOST>"%(_groupsre)s,?\s*"message":"Trusted domain error.*$

@@ -17,8 +17,8 @@ spec:
       serviceAccountName: fail2ban
       containers:
         - name: fail2ban
-          image: glvx/fail2ban-calico:8
-          args: ["fail2ban-server", "-f"]
+          image: glvx/fail2ban-calico:9
+            #args: ["fail2ban-server", "-f"]
           resources:
             limits:
               memory: 200Mi
@@ -48,7 +48,7 @@ spec:
             - name: filters
               mountPath: /etc/fail2ban/filter.d/nextcloud.local
               readOnly: true
-              subPath: gitea.local
+              subPath: nextcloud.local
             - name: logs
               mountPath: /var/log/pods/
               readOnly: true
