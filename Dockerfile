@@ -8,8 +8,8 @@ ADD https://github.com/just-containers/s6-overlay/releases/latest/download/s6-ov
 ADD https://github.com/just-containers/s6-overlay/releases/latest/download/s6-overlay-symlinks-arch.tar.xz /tmp/s6overlay-symlinks.tar.xz
 RUN apt-get update -y -q && apt-get install -y -q --no-install-recommends build-essential ca-certificates gcc curl
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
-COPY . /builder
-RUN . "$HOME/.cargo/env" && cd /builder && cargo build --release && cp target/release/fail2ban-calico /usr/bin/fail2ban-calico
+COPY rust_src/. /builder
+RUN . "$HOME/.cargo/env" && cd /builder && cargo build --release && cp target/release/fail2ban-calico /usr/bin/fail2ban-calico && cp target/release/log-monitor /usr/bin/log-monitor
 
 RUN echo "Built ${TARGETARCH}"
 
@@ -44,6 +44,7 @@ COPY --from=builder /tmp/s6overlay.tar.xz /tmp/
 COPY --from=builder /tmp/s6overlay-noarch.tar.xz /tmp/
 COPY --from=builder /tmp/s6overlay-symlinks.tar.xz /tmp/
 COPY --from=builder /usr/bin/fail2ban-calico /usr/bin/
+COPY --from=builder /usr/bin/log-monitor /usr/bin/
 
 RUN tar -xJf /tmp/s6overlay.tar.xz -C / \
     && rm /tmp/s6overlay.tar.xz && \

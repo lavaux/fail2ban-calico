@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/command/with-contenv /bin/bash
 
 while true; do
   K8S_LOG_GLOB1=$(echo $K8S_LOG_GLOB)
@@ -8,4 +8,5 @@ while true; do
   done
   /mytools/dir-monitor.sh ${dirs} -m any -c "echo reloading"
   /usr/bin/fail2ban-client reload --all
+  sleep 1
 done
