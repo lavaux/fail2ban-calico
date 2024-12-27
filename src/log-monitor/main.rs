@@ -13,6 +13,7 @@ struct Config {
     reload_command: String,
     check_interval: u64,
     mode: TriggerMode,
+    stop_after: bool,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -54,6 +55,14 @@ fn parse_args() -> Config {
                 .help("Command to execute when directory/directories disappear"),
         )
         .arg(
+            Arg::new("stop-after")
+                .default_value("false")
+                .long("stop-after")
+                .value_parser(clap::value_parser!(bool))
+                .required(false)
+                .help("Stop after running the command")
+        )
+        .arg(
             Arg::new("interval")
                 .short('i')
                 .long("interval")
@@ -80,12 +89,14 @@ fn parse_args() -> Config {
     let reload_command = matches.get_one::<String>("command").unwrap().clone();
     let check_interval = *matches.get_one::<u64>("interval").unwrap();
     let mode = matches.get_one::<String>("mode").unwrap().parse().unwrap();
+    let stop_after = matches.get_one::<bool>("stop-after").unwrap().clone();
 
     Config {
         directories,
         reload_command,
         check_interval,
         mode,
+        stop_after,
     }
 }
 
@@ -159,7 +170,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 eprintln!("Error executing command: {}", e);
                 return Err(e.into());
             }
-            break;
+            if config.stop_after {
+                break;
+            }
         }
 
         thread::sleep(Duration::from_secs(config.check_interval));
