@@ -17,7 +17,7 @@ spec:
       serviceAccountName: fail2ban
       containers:
         - name: fail2ban
-          image: glvx/fail2ban-calico:9
+          image: glvx/fail2ban-calico:10
             #args: ["fail2ban-server", "-f"]
           resources:
             limits:
