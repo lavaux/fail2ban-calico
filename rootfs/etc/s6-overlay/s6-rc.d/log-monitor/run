@@ -1,0 +1,11 @@
+#!/bin/bash
+
+while true; do
+  K8S_LOG_GLOB1=$(echo $K8S_LOG_GLOB)
+  dirs=
+  for a in $K8S_LOG_GLOB1; do
+    dirs="${dirs} -d $a"
+  done
+  /mytools/dir-monitor.sh ${dirs} -m any -c "echo reloading"
+  /usr/bin/fail2ban-client reload --all
+done
